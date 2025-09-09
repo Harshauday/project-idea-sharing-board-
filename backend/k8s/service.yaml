@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: outbox-api-svc
+spec:
+  selector:
+    app: outbox-api
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 4000
+  type: LoadBalancer

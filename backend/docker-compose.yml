@@ -1,0 +1,21 @@
+version: '3.8'
+services:
+  db:
+    image: mongo:6
+    restart: unless-stopped
+    volumes:
+      - mongo-data:/data/db
+    ports:
+      - "27017:27017"
+  api:
+    build: .
+    ports:
+      - "4000:4000"
+    environment:
+      - MONGO_URI=mongodb://db:27017/outboxlabs
+      - JWT_SECRET=devsecret
+    depends_on:
+      - db
+
+volumes:
+  mongo-data:
