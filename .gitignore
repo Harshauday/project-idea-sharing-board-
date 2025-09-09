@@ -1,0 +1,58 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+
+# Dependency directories
+node_modules/
+jspm_packages/
+
+# Optional npm cache directory
+.npm/
+
+# Optional REPL history
+.node_repl_history
+
+# dotenv environment variables file
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Runtime files
+.eslintcache
+.next/
+.nuxt/
+.vuepress/dist
+.serverless/
+.fusebox/
+.webpack/
+
+# Build directories
+build/
+dist/
+public/
+
+# IDE and editor files
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Specific to Node.js
+/node_modules
+/package-lock.json
+
+# Specific to Vite
+.vite/
+dist/
+
+# Backend specific
+backend/node_modules/
+backend/package-lock.json
