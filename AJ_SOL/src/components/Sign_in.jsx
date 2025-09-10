@@ -55,7 +55,7 @@ const SignIn = () => {
         } else if (data.error === "missing") {
           setMessage("Email and password are required.");
         } else {
-          setMessage(data.error || "Login failed.");
+          setMessage(data.error || "Invalid email or password. Please try again.");
         }
       }
     } catch (err) {
