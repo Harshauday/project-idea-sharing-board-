@@ -30,8 +30,8 @@ To set up the project locally, follow these steps:
 ### 1. Clone the repository
 
 ```bash
-git clone <repository_url>
-cd "new idea sharing/new idea sharing/IDEA-SHARING"
+git clone https://github.com/Harshauday/project-idea-sharing-board-.git
+cd "project-idea-sharing-board"
 ```
 
 ### 2. Backend Setup
