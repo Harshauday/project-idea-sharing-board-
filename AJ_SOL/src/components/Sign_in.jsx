@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import API_BASE_URL from "../api/api";
 
@@ -7,6 +7,17 @@ const SignIn = () => {
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
   const navigate = useNavigate();
+
+  // Check for registered email in localStorage on component mount
+  useEffect(() => {
+    const registeredEmail = localStorage.getItem("registeredEmail");
+    if (registeredEmail) {
+      setEmail(registeredEmail);
+      setMessage("Using your registered email. Please enter your password.");
+      // Clear it after using it once
+      localStorage.removeItem("registeredEmail");
+    }
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -17,13 +28,17 @@ const SignIn = () => {
     }
 
     try {
-      const response = await fetch(`${API_BASE_URL}/auth/login`, {
+      console.log("Attempting login with:", { email });
+      
+      // Try with the provided email
+      let response = await fetch(`${API_BASE_URL}/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
       });
 
-      const data = await response.json();
+      let data = await response.json();
+      console.log("Login response:", { status: response.status, data });
 
       if (response.ok) {
         localStorage.setItem("token", data.token);
@@ -32,7 +47,16 @@ const SignIn = () => {
         setPassword('');
         navigate("/home");
       } else {
-        setMessage(data.message || "Login failed.");
+        // Display more specific error messages
+        if (data.error === "no user") {
+          setMessage("No user found with this email. Please check your email or sign up.");
+        } else if (data.error === "invalid") {
+          setMessage("Invalid password. Please try again.");
+        } else if (data.error === "missing") {
+          setMessage("Email and password are required.");
+        } else {
+          setMessage(data.error || "Login failed.");
+        }
       }
     } catch (err) {
       console.error("Frontend Error:", err);

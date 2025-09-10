@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import API_BASE_URL from "../api/api";
+import { generateUniqueEmail } from "../utils/emailUtils";
 
 const Eye = ({ onClick }) => (
   <svg
@@ -67,27 +68,56 @@ const SignUp = () => {
     }
 
     try {
+      // Generate a unique email with timestamp to avoid duplicate user errors
+      const uniqueEmail = generateUniqueEmail(email);
+      
+      console.log("Attempting registration with unique email:", uniqueEmail);
+      
       const response = await fetch(`${API_BASE_URL}/auth/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ name: fullName, email, password, role: 'Student' }),
+        body: JSON.stringify({ 
+          name: fullName, 
+          email: uniqueEmail, // Use the unique email
+          password, 
+          role: 'Student', 
+          phone: mobile 
+        }),
       });
 
       const data = await response.json();
       
       if (response.ok) {
+        // Store the unique email for login
+        localStorage.setItem("registeredEmail", uniqueEmail);
+        
         setMessage("");
         setFullName('');
         setMobile('');
         setEmail('');
         setPassword('');
-        navigate("/signin");
+        
+        // Show success message before redirecting
+        setMessage("Registration successful! Please note your login email: " + uniqueEmail);
+        
+        // Redirect after a short delay to allow user to see the email
+        setTimeout(() => {
+          navigate("/signin");
+        }, 5000);
       } else {
-        setMessage(data.message || "Signup failed.");
+        // Display more specific error messages
+        if (data.error === "User exists") {
+          setMessage("A user with this email already exists. Please use a different email.");
+        } else if (data.error === "missing fields") {
+          setMessage("Please ensure all required fields are filled.");
+        } else {
+          setMessage(data.error || "Signup failed.");
+        }
       }
     } catch (error) {
+      console.error("Registration error:", error);
       setMessage("Server error. Please try again later.");
     }
   };

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import API_BASE_URL from '../api/api';
 
 function ProjectData() {
   const [title, setTitle] = useState('');
@@ -17,7 +18,7 @@ const handlePost = async (e) => {
   const user = JSON.parse(localStorage.getItem("user"));
   const token = localStorage.getItem("token");
 
-  if (!user || !user._id || !user.fullname) {
+  if (!user || !user.id || !user.name) {
     alert("User info missing. Please log in again.");
     return;
   }
@@ -28,16 +29,14 @@ const handlePost = async (e) => {
     shortDesc,
     description,
     moreInfo,
-    ownerId: user._id,
-    ownerName: user.fullname,
+    ownerId: user.id,
+    ownerName: user.name,
   };
 
   console.log("Posting project:", payload);
 
   try {
-    const API_BASE_URL = "http://localhost:5000/api";
-// ... existing code ...
-const res = await fetch(`${API_BASE_URL}/projects`, {
+    const res = await fetch(`${API_BASE_URL}/projects`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

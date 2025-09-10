@@ -31,12 +31,31 @@ const Home = () => {
     try {
       const res = await fetch(`${API_BASE_URL}/projects`);
       const data = await res.json();
-      setProjects(data);
+      console.log("Projects data from API:", data);
+      setProjects(Array.isArray(data) ? data : []);
       setVisibleCount(6);
     } catch (err) {
       console.error("Fetch error:", err);
+      setProjects([]);
     }
     setLoading(false);
+  };
+
+  const handleSearch = async (term) => {
+    console.log("Search term:", term);
+    try {
+      const res = await fetch(`${API_BASE_URL}/projects/search?term=${encodeURIComponent(term)}`);
+      const data = await res.json();
+      console.log("Search results data:", data);
+      setProjects(Array.isArray(data) ? data : []);
+      setFilter(null);
+      setSelected(null);
+      setSearchActive(true);
+      setVisibleCount(6);
+    } catch (err) {
+      console.error("Search error:", err);
+      setProjects([]);
+    }
   };
 
   const fetchRecentStudents = async () => {
@@ -46,20 +65,6 @@ const Home = () => {
       setRecentStudents(data);
     } catch (err) {
       console.error("Recent students fetch error:", err);
-    }
-  };
-
-  const handleSearch = async (term) => {
-    try {
-      const res = await fetch(`${API_BASE_URL}/projects/search?term=${encodeURIComponent(term)}`);
-      const data = await res.json();
-      setProjects(data);
-      setFilter(null);
-      setSelected(null);
-      setSearchActive(true);
-      setVisibleCount(6);
-    } catch (err) {
-      console.error("Search error:", err);
     }
   };
 
@@ -173,7 +178,7 @@ const Home = () => {
                           {getEmoji(p.domain)} {p.domain}
                         </span>
                       </div>
-                      <p className="text-base text-gray-300 line-clamp-3 mt-4"><p className='text-[#DCFFB7]'>Description</p>{p.shortDesc || 'No short description.'}</p>
+                      <p className="text-base text-gray-300 line-clamp-3 mt-4"><span className='text-[#DCFFB7]'>Description</span>{p.shortDesc || 'No short description.'}</p>
                     </div>
                   ))}
                 </div>
@@ -211,15 +216,15 @@ const Home = () => {
             {recentStudents.length > 0 ? (
               recentStudents.slice(0, 6).map((project, idx) => (
                 <div
-                  key={idx}
+                  key={project._id}
                   className="min-w-[250px] h-60 bg-[#262626] border border-yellow-500 rounded-lg p-4 shadow hover:shadow-yellow-400 hover:border-yellow-400 transform hover:-translate-y-2 transition duration-300 flex-shrink-0 text-center"
                 >
-                  <h3 className="text-3xl font-bold mb-2 text-center text-[#A2EF44] mb-5">
-                    {project.ownerName}
-                  </h3>
-                  <p className="text-lg text-sm mb-1 text-center text-yellow-300 mb-4">
-                    <strong>Domain:</strong> {project.domain}
-                  </p>
+                  <h3 className="text-xl font-bold text-yellow-300 mb-2">{project.title}</h3>
+                  <div className="text-sm text-white space-y-1">
+                    <p><strong className="text-gray-400">Owner:</strong> {project.author ? project.author.name : 'N/A'}</p>
+                    <p><strong className="text-gray-400">Domain:</strong> {project.domain}</p>
+                    <p><strong className="text-gray-400">Short Desc:</strong> {project.shortDesc || "N/A"}</p>
+                  </div>
                   <p className="text-sm text-center text-[#7F8CAA]">
                     <strong>Uploaded At:</strong>{" "}
                     {new Date(project.createdAt).toLocaleString()}

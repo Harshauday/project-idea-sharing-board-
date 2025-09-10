@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { useState } from "react";
 
 const Header = ({ onSearch }) => {
@@ -21,7 +21,9 @@ const Header = ({ onSearch }) => {
   return (
     <div className="bg-black w-full flex justify-center sticky top-0 z-50 shadow-xl">
       <header className="w-[98%] bg-yellow-400 text-black py-5 px-8 mt-4 mb-2 rounded-2xl flex justify-between items-center shadow-lg border-[3px] border-yellow-500">
-        <h1 className="text-3xl font-extrabold tracking-wide">Idea Sharing Board</h1>
+        <Link to="/home" className="text-3xl font-extrabold tracking-wide select-none cursor-pointer">
+          Idea Sharing Board
+        </Link>
 
         <div className="flex items-center gap-x-20">
           <div className="flex items-center bg-yellow-300 border-2 border-black rounded-lg overflow-hidden">
@@ -31,7 +33,7 @@ const Header = ({ onSearch }) => {
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-              className="px-12 py-2 bg-yellow-300 text-black placeholder-black outline-none w-64"
+              className="px-12 py-2 bg-yellow-300 text-black placeholder-black outline-none w-80"
             />
             <button
               onClick={handleSearch}
